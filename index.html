@@ -7,6 +7,7 @@
 body {font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0;}
 .container {max-width:720px; margin:2rem auto; background:#fff; padding:1.5rem; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.08);}
 h1 {margin-top:0; font-size:1.8rem;}
+p {line-height:1.6;}
 label {display:block; margin-top:1rem; font-weight:600;}
 input, select, textarea, button {width:100%; padding:0.75rem; margin-top:0.5rem; border:1px solid #ccc; border-radius:6px; font-size:1rem;}
 button {background:#2563eb; color:#fff; border:none; cursor:pointer;}
@@ -17,12 +18,18 @@ button:hover {background:#1d4ed8;}
 <body>
 <div class="container">
     <h1>AI Internship Recommendation</h1>
+    <p style="color:#666; margin-bottom:1.5rem; font-size:0.95rem;">
+        Fill out the form below with your CGPA, technical skills, and preferred domain to receive personalized internship recommendations tailored to your profile.
+    </p>
     <form id="recommendationForm">
         <label for="cgpa">CGPA (0.00 - 10.00)</label>
+        <small style="color:#999; display:block; margin-top:-0.5rem; margin-bottom:0.5rem;">Enter your current CGPA on a scale of 0 to 10</small>
         <input id="cgpa" type="number" min="0" max="10" step="0.01" required />
         <label for="skills">Skills (comma separated)</label>
+        <small style="color:#999; display:block; margin-top:-0.5rem; margin-bottom:0.5rem;">List your technical skills separated by commas (e.g. Python, JavaScript, SQL)</small>
         <textarea id="skills" rows="3" placeholder="e.g. Python, JavaScript, SQL"></textarea>
         <label for="domain">Preferred Domain</label>
+        <small style="color:#999; display:block; margin-top:-0.5rem; margin-bottom:0.5rem;">Choose the field that best matches your career interests</small>
         <select id="domain">
             <option value="data-science">Data Science</option>
             <option value="web-development">Web Development</option>
