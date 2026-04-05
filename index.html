@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AI Internship Recommendation</title>
+<style>
+body {font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0;}
+.container {max-width:720px; margin:2rem auto; background:#fff; padding:1.5rem; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.08);}
+h1 {margin-top:0; font-size:1.8rem;}
+label {display:block; margin-top:1rem; font-weight:600;}
+input, select, textarea, button {width:100%; padding:0.75rem; margin-top:0.5rem; border:1px solid #ccc; border-radius:6px; font-size:1rem;}
+button {background:#2563eb; color:#fff; border:none; cursor:pointer;}
+button:hover {background:#1d4ed8;}
+.job {border:1px solid #e5e7eb; border-radius:8px; padding:1rem; margin-top:1rem; background:#fafafa;}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>AI Internship Recommendation</h1>
+    <form id="recommendationForm">
+        <label for="cgpa">CGPA (0.00 - 10.00)</label>
+        <input id="cgpa" type="number" min="0" max="10" step="0.01" required />
+        <label for="skills">Skills (comma separated)</label>
+        <textarea id="skills" rows="3" placeholder="e.g. Python, JavaScript, SQL"></textarea>
+        <label for="domain">Preferred Domain</label>
+        <select id="domain">
+            <option value="data-science">Data Science</option>
+            <option value="web-development">Web Development</option>
+            <option value="machine-learning">Machine Learning</option>
+            <option value="devops">DevOps</option>
+            <option value="mobile">Mobile App</option>
+        </select>
+        <button type="submit">Get Recommendations</button>
+    </form>
+    <div id="results"></div>
+</div>
+<script>
+const internships = [
+    { title:"Front-end Developer Intern", domain:"web-development", skills:["javascript","html","css","react"], minCgpa:7.0, description:"Build responsive UI components and improve front-end architecture." },
+    { title:"Data Analyst Intern", domain:"data-science", skills:["python","sql","excel","statistics"], minCgpa:6.5, description:"Analyze datasets and deliver business insights." },
+    { title:"Machine Learning Intern", domain:"machine-learning", skills:["python","machine learning","tensorflow","statistics"], minCgpa:8.0, description:"Train and evaluate predictive models." },
+    { title:"DevOps Intern", domain:"devops", skills:["linux","docker","aws","ci/cd"], minCgpa:7.5, description:"Automate deployments and manage cloud infrastructure." },
+    { title:"Mobile App Intern", domain:"mobile", skills:["flutter","android","ios","dart"], minCgpa:6.8, description:"Develop mobile applications and user experiences." }
+];
+
+function normalize(text) {
+    return String(text).toLowerCase().trim();
+}
+
+function scoreInternship(userSkills, cgpa, preferredDomain, internship) {
+    const skillMatches = internship.skills.reduce((count, skill) => {
+        return count + (userSkills.includes(normalize(skill)) ? 1 : 0);
+    }, 0);
+    const domainMatch = internship.domain === preferredDomain ? 2 : 0;
+    const cgpaBonus = cgpa >= internship.minCgpa ? 1 : -((internship.minCgpa - cgpa) * 2);
+    return skillMatches * 2 + domainMatch + cgpaBonus;
+}
+
+document.getElementById("recommendationForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const cgpa = parseFloat(document.getElementById("cgpa").value);
+    const skills = document.getElementById("skills").value
+        .split(",")
+        .map(normalize)
+        .filter(Boolean);
+    const domain = document.getElementById("domain").value;
+
+    const scored = internships
+        .map(job => ({ job, score: scoreInternship(skills, cgpa, domain, job) }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+
+    const results = document.getElementById("results");
+    if (!skills.length || isNaN(cgpa)) {
+        results.innerHTML = "<p>Please enter both CGPA and skills.</p>";
+        return;
+    }
+
+    results.innerHTML = scored.map(({ job, score }) => `
+        <div class="job">
+            <h2>${job.title}</h2>
+            <p><strong>Domain:</strong> ${job.domain.replace("-", " ")}</p>
+            <p><strong>Min CGPA:</strong> ${job.minCgpa}</p>
+            <p><strong>Required Skills:</strong> ${job.skills.join(", ")}</p>
+            <p>${job.description}</p>
+            <p><strong>Match Score:</strong> ${score.toFixed(1)}</p>
+        </div>
+    `).join("");
+});
+</script>
+</body>
+</html>
